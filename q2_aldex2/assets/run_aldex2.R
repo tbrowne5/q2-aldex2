@@ -20,10 +20,10 @@ otu <- read.delim(inp.abundances.path, check.names=FALSE, row.names=1) # reads
 suppressWarnings(library(ALDEx2))
 
 # glm analysis ------------------------------------------------------------
+if (test == 'glm'){
 condsTotal <- ncol(t(otu))
 condsNumSplit <- length(unique(map[,condition]))
 condsSplitSize <- condsTotal/condsNumSplit
-if (test == 'glm'){
 covariates <- data.frame("A" = sample(0:1, condsTotal, replace = TRUE),"B" = c(rep(0, condsSplitSize), rep(1, condsSplitSize)))
 mm <- model.matrix(~ A + B, covariates)
 x <- aldex.clr(t(otu), mm, mc.samples=1, denom="all")
