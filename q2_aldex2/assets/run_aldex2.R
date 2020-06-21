@@ -21,17 +21,21 @@ suppressWarnings(library(ALDEx2))
 
 # glm analysis ------------------------------------------------------------
 if (test == 'glm'){
+# conditions (ie: selex has 7 NS and 7 S)
 condsTotal <- ncol(t(otu))
 condsNumSplit <- length(unique(map[,condition]))
 condsSplitSize <- condsTotal/condsNumSplit
+# glm function (covariates, model matrix, clr function, and glm function)
 covariates <- data.frame("A" = sample(0:1, condsTotal, replace = TRUE),"B" = c(rep(0, condsSplitSize), rep(1, condsSplitSize)))
 mm <- model.matrix(~ A + B, covariates)
 x <- aldex.clr(t(otu), mm, mc.samples=1, denom="all")
 x.tt <- aldex.glm(x)
+# glm effect function (covariates, model matrix, clr function, and glm effect function)
 covariates_effect <- data.frame("A" = sample(0:1, condsTotal, replace = TRUE),"B" = c(rep(0, condsSplitSize), rep(1, condsSplitSize)),"Z" = sample(c(1,2,3), condsTotal, replace=TRUE))
 mm_effect <- model.matrix(~ A + Z + B, covariates_effect)
 x_effect <- aldex.clr(t(otu), mm_effect, mc.samples=8, denom="all")
 x.effect <- aldex.glm.effect(x_effect)
+# merging the glm effect and glm function data
 fit <- data.frame(x.effect, x.tt, check.names=F)
 }
 
